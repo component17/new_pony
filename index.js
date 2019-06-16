@@ -19,8 +19,31 @@ global.io = require('socket.io')(server);
 global.Models = require('./models/index.js');
 global.Driver = require('./driver/index.js');
 
+const spawn = require("child_process").spawn;
+
+
 server.listen(3000, () => {
     console.log('Start server 3000 port');
+
+    const pythonProcess = spawn('sudo', ["python", __dirname + "/driver.py", "--port", "3000"], {
+        detached: false,
+        stdio: 'pipe'
+    });
+
+//pythonProcess.unref();
+
+    process.on('exit', () => {
+        pythonProcess.kill()
+    });
+
+    pythonProcess.on('error', (code) => {
+        console.log('python process error with code ' + code);
+    });
+
+    pythonProcess.on('exit', (code) => {
+        console.log('python process exited with code ' + code);
+    });
+
 });
 
 app.use(express.static(__dirname + '/public'));
@@ -28,14 +51,14 @@ app.use(express.static(__dirname + '/public'));
 app.use(cors());
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 
 // parse application/json
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
 
-    if(req.url !== '/'){
+    if (req.url !== '/') {
 
         let data = {
             headers: req.headers,
