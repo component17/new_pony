@@ -25,7 +25,7 @@ const spawn = require("child_process").spawn;
 server.listen(3000, () => {
     console.log('Start server 3000 port');
 
-    const pythonProcess = spawn('sudo', ["python", __dirname + "/driver.py", "--port", "3000"], {
+    const pythonProcess = spawn('sudo', ["python3", __dirname + "/driver.py", "--port", "3000"], {
         detached: false,
         stdio: 'pipe'
     });
