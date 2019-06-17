@@ -19,30 +19,28 @@ global.io = require('socket.io')(server);
 global.Models = require('./models/index.js');
 global.Driver = require('./driver/index.js');
 
-const spawn = require("child_process").spawn;
+// const spawn = require("child_process").spawn;
 
 
 server.listen(3000, () => {
     console.log('Start server 3000 port');
 
-    const pythonProcess = spawn('sudo', ["python3", __dirname + "/driver.py", "--port", "3000"], {
-        detached: false,
-        stdio: 'pipe'
-    });
-
-//pythonProcess.unref();
-
-    process.on('exit', () => {
-        pythonProcess.kill()
-    });
-
-    pythonProcess.on('error', (code) => {
-        console.log('python process error with code ' + code);
-    });
-
-    pythonProcess.on('exit', (code) => {
-        console.log('python process exited with code ' + code);
-    });
+    // const pythonProcess = spawn('sudo', ["python3", __dirname + "/driver.py", "--port", "3000"], {
+    //     detached: false,
+    //     stdio: 'pipe'
+    // });
+    //
+    // process.on('exit', () => {
+    //     pythonProcess.kill()
+    // });
+    //
+    // pythonProcess.on('error', (code) => {
+    //     console.log('python process error with code ' + code);
+    // });
+    //
+    // pythonProcess.on('exit', (code) => {
+    //     console.log('python process exited with code ' + code);
+    // });
 
 });
 
