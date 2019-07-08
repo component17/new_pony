@@ -2,7 +2,7 @@
   "sections": [
     {
       "id": "Y3CxYfZmV",
-      "title": "Backholder 1",
+      "title": "Backholder 555",
       "modules": [
         {
           "id": "uz4RrNdgX",
@@ -33,6 +33,18 @@
           "pid": "Y3CxYfZmV",
           "alias": "Ячейка 5",
           "did": "201905040005"
+        }
+      ]
+    },
+    {
+      "id": "UMdEsi1ZX",
+      "title": "test",
+      "modules": [
+        {
+          "id": "DPf_3adgQ",
+          "pid": "UMdEsi1ZX",
+          "alias": "я1",
+          "did": "2222222222222"
         }
       ]
     }
@@ -67,13 +79,19 @@
       "pid": "Y3CxYfZmV",
       "alias": "Ячейка 5",
       "did": "201905040005"
+    },
+    {
+      "id": "DPf_3adgQ",
+      "pid": "UMdEsi1ZX",
+      "alias": "я1",
+      "did": "2222222222222"
     }
   ],
   "settings": {
     "baseColor": {
-      "r": 255,
-      "g": 0,
-      "b": 255
+      "r": 13,
+      "g": 242,
+      "b": 13
     },
     "errorColor": {
       "r": 255,

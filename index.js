@@ -22,6 +22,8 @@ global.Driver = require('./driver/index.js');
 // const spawn = require("child_process").spawn;
 
 
+
+
 server.listen(3000, () => {
     console.log('Start server 3000 port');
 
@@ -96,22 +98,25 @@ io.on('connection', (socket) => {
     // });
 });
 
-
-let schema = {
-    type: 'barcode_scan',
-    next: {
-        type: 'count',
-        next: {
-            type: 'options',
-            data: [
-                {
-                    key: 'sn',
-                    label: 'Серийный номер'
-                }
-            ]
+let Schema = {
+    groups: [
+        {
+            id: String,
+            name: String,
         }
+    ],
+    lamps: [
+        {
+            id: String,
+            group_id: String,
+            name: String,
+            device_id: String,
+        }
+    ],
+    settings: {
+        color_base: Object,
+        color_error: Object
     }
-
 };
 
 

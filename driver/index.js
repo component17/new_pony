@@ -10,11 +10,14 @@ module.exports = {
             }
         });
 
-        console.log(res)
+        console.log(res);
 
         io.emit('switch', res);
 
-        console.log(res)
+        let ids = modules.map(i => i.id);
+        io.emit('state:modules', ids);
+
+        console.log(res);
     },
     turnOffAll(){
         let color = { r: 0, g: 0, b: 0 };
@@ -28,13 +31,42 @@ module.exports = {
         });
 
         io.emit('switch', res);
+        io.emit('state:modules', []);
 
         console.log(res)
     },
-    turnOnBySection(){
+    turnOnByAlias(alias){
+        let color = Models.Settings.getBaseColor();
+        let module = Models.Modules.getByAlias(alias);
+        if(module){
+            let modules = Models.Modules.getFilterSection(module.pid);
 
+            let res = modules.map((i) => {
+                return {
+                    id: i.did,
+                    color: i.id === module.id ? color : { r: 0, g: 0, b: 0 }
+                }
+            });
+            io.emit('switch', res);
+            io.emit('state:modules', [module.id]);
+            console.log(res)
+        }
     },
-    turnOnByAlias(){
+    turnOnById(id){
+        let color = Models.Settings.getBaseColor();
+        let module = Models.Modules.getById(id);
+        if(module){
+            let modules = Models.Modules.getFilterSection(module.pid);
 
+            let res = modules.map((i) => {
+                return {
+                    id: i.did,
+                    color: i.id === module.id ? color : { r: 0, g: 0, b: 0 }
+                }
+            });
+            io.emit('switch', res);
+            io.emit('state:modules', [module.id]);
+            console.log(res)
+        }
     }
 };

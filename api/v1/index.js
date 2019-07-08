@@ -54,6 +54,22 @@ router.post('/modules', (req, res) => {
     })
 });
 
+router.post('/modules/:id', (req, res) => {
+    Models.Modules.update(req.params.id, req.body).then((data) => {
+        res.status(200).json(data);
+    }).catch((err) => {
+        res.status(500).json({err: 'Произошла ошибка на сервере!'})
+    });
+});
+
+router.delete('/modules/:id', (req, res) => {
+    Models.Modules.delete(req.params.id).then((data) => {
+        res.status(200).json('ok');
+    }).catch((err) => {
+        res.status(500).json({err: 'Произошла ошибка на сервере!'})
+    });
+});
+
 router.get('/turn/on/all', (req, res) => {
     Driver.turnOnAll();
     res.status(200).json('ok');
@@ -61,6 +77,16 @@ router.get('/turn/on/all', (req, res) => {
 
 router.get('/turn/off/all', (req, res) => {
     Driver.turnOffAll();
+    res.status(200).json('ok');
+});
+
+router.get('/turn/id/:id', (req, res) => {
+    Driver.turnOnById(req.params.id);
+    res.status(200).json('ok');
+});
+
+router.post('/turn/alias', (req, res) => {
+    Driver.turnOnByAlias(req.body.alias);
     res.status(200).json('ok');
 });
 
