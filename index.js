@@ -19,7 +19,7 @@ global.io = require('socket.io')(server);
 global.Models = require('./models/index.js');
 global.Driver = require('./driver/index.js');
 
-// const spawn = require("child_process").spawn;
+const spawn = require("child_process").spawn;
 
 
 
