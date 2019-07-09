@@ -6,8 +6,8 @@
 ######################################################################################################################
 
 
-
-
+import datetime
+from itertools import filterfalse
 import serial
 import time
 import threading
@@ -49,7 +49,7 @@ ip = run_cmd(GET_IP_CMD)
 print(ip[:12])
 lcd_screen.show_ip(ip[:12])                #Printing on lcd
 
-
+f = open('logs.txt', 'w')
 
 repData = reportData("")
 report = reportCallback("")
@@ -63,6 +63,9 @@ sio = socketio.Client()                     #Connecting to socket server
 def on_connect():
 
     print('connection established')
+
+
+
 
 @sio.on('switch')                           #Json listener
 def on_turn_led(data):
@@ -99,32 +102,53 @@ def on_turn_led(data):
             taskList.append(sendingData)
             expectedRespond.append(sendingData[:12])
             #print (sendingData)
-            time.sleep(0.05)
-        print (taskList, "task list 0")
+            time.sleep(0.002)
+
+
+
+        print (taskList, "task list recieved via socket")
+        #f.write(str(taskList) + "task list recieved via socket at " + str(datetime.datetime.now())+ "\n")
+        def firstAttempt(x):
+            if act == x[:12]:
+                print (x, " delivered at first attempt ")
+                return 0
+            else:
+                return 1
+
+
         for act in report.reportArray:                  #Checking if LEDs recieved commands at first attempt
-            for cellCallback in taskList:
-                if act ==cellCallback[:12]:
-                    print(cellCallback, "delivered at first attempt")
-                    taskList.remove(cellCallback)
+            firstDelivList = filter(firstAttempt,taskList)
+            taskList = list(firstDelivList)
 
-        print (taskList, "task list 1")
-        for cellCallback in taskList:                   #Sending commands for remaining LEDs for 10 times
-            attempts = 0
-            while attempts!=100:
 
-                if repData.dataPacket[:12] == cellCallback[:12]:
+        print (taskList, "task list after first send")
+        #time.sleep(0.01)
+        attempts = 0
+        def deliveryCtrl(x):
+            if x[:12] in report.reportArray:
+                print(x, " successfully delivered at ", attempts)
+                sio.emit("switch:status",taskList)
+                return 0
+            else:
+                sending(x)
 
-                    print(cellCallback, " successfully delivered at ", attempts)
-                    sio.emit("switch:status",cellCallback)
-                    taskList.remove(cellCallback)
-                    break
-                else:
-                    sending(cellCallback)
-                    attempts +=1
-                time.sleep(0.01)
-    print (taskList, "not delivered")
+                time.sleep(0.002)
+                #print("sending", x)
+                return 1
+        while attempts!=350:
+            #print (taskList, "task list ", attempts)
+            truncDelivList = filter(deliveryCtrl,taskList)
+            taskList = list(truncDelivList)
+
+            attempts +=1
+
+
+
+
+    #print (taskList, "not delivered")
     sio.emit("switch:status",report.reportArray)        #Sending LED status to socket
     print (report.reportArray)
+    #f.write(str(report.reportArray) + "recieved reports at " + str(datetime.datetime.now())+ "\n")
     print("\n")
 
 
@@ -150,12 +174,13 @@ def recieve():                          #LED callback listener
                     print ("sensor", data)
                     sio.emit("sensor:detect",data)
                 else:
-                    repData.dataPacket = data
-                    if data not in report.reportArray:
+                    #repData.dataPacket = data
+                    if data[:12] not in report.reportArray:
                         report.reportArray.append(data[:12])
 
 
-                    #print (data)
+
+                    #print (report.reportArray)
 
 
         elif stream.getState() == 1:
@@ -177,3 +202,4 @@ def on_disconnect():
 sio.connect('http://localhost:{}'.format (socketPort))
 recieve()
 sio.wait()
+f.close()
