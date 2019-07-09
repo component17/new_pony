@@ -135,12 +135,14 @@ def on_turn_led(data):
                 time.sleep(0.002)
                 #print("sending", x)
                 return 1
-        while attempts!=200:
+        while attempts!=150:
             #print (taskList, "task list ", attempts)
             truncDelivList = filter(deliveryCtrl,taskList)
+            time.sleep(0.01)
             taskList = list(truncDelivList)
-
             attempts +=1
+            if len(taskList) ==0:
+                break
 
 
 
