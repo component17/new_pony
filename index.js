@@ -37,6 +37,7 @@ server.listen(3000, () => {
 
     pythonProcess.on('error', (code) => {
         console.log('python process error with code ' + code);
+        process.exit(0)
     });
 
     pythonProcess.on('exit', (code) => {
