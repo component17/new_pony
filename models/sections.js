@@ -59,6 +59,7 @@ module.exports = (db, shortid) => {
         },
         delete(id){
             db.get('sections').remove({ id }).write();
+            db.get('modules').remove({ pid: id }).write();
 
             io.sockets.emit('models:sections:delete', id);
 
